@@ -13,7 +13,7 @@ const getAll = () => {
 
 const getUser = id => {
   // Get all with get
-  const request = axios.get(baseUrl, {id: id})
+  const request = axios.get(`${baseUrl}?id=${id}`)
   return request.then(response => response.data)
 }
 
@@ -25,15 +25,18 @@ const create = newObject => {
 
 // Put requests reset the whole container object on back-end
 // so they dont need to be separated with identifiers
-const update = (newObject) => {
+const update = (oldObject, newObject) => {
   // send object, with target id, update requested fields with put request
-  const request = axios.put(baseUrl, newObject)
+  const request = axios.put(baseUrl, {
+    old: oldObject,
+    new: newObject
+  })
   return request.then(response => response.data)
 }
 
-const del = (id, newObject) => {
+const del = (newObject) => {
   // Delete from server with id sent with delete request
-  const request = axios.delete(baseUrl, newObject)
+  const request = axios.delete(baseUrl, {data: newObject})
   return request.then(response => response.data)
 }
 
@@ -41,13 +44,64 @@ const del = (id, newObject) => {
 function App() {
   // Test object
   const obj = {
-    target: 1,
     username: 'muumi',
     password: 'meemu',
   }
 
-  // Test request
+  const objUpdate = {
+    username: 'kille',
+    password: 'kalle',
+  }
+
+  const objUpdateName = {
+    username: 'kille'
+  }
+  
+  const objUpdatePass = {
+    password: 'kalle'
+  }
+
+  // Test all
+  getAll().then(res => {
+    console.log(res)
+  }).catch(error => {
+    console.log(error)
+  })
+  
+  // Test single user
+  getUser(20).then(res => {
+    console.log(res)
+  }).catch(error => {
+    console.log(error)
+  })
+
   getUser(2).then(res => {
+    console.log(res)
+  }).catch(error => {
+    console.log(error)
+  })
+
+  // Test create user
+  create(obj).then(res => {
+    console.log(res)
+  }).catch(error => {
+    console.log(error)
+  })
+  
+  // Test update user
+  update(obj, objUpdateName).then(res => {
+    console.log(res)
+  }).catch(error => {
+    console.log(error)
+  })
+  update(obj, objUpdatePass).then(res => {
+    console.log(res)
+  }).catch(error => {
+    console.log(error)
+  })
+    
+  // Test delete user
+  del(objUpdate).then(res => {
     console.log(res)
   }).catch(error => {
     console.log(error)

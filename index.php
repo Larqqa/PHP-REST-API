@@ -66,44 +66,23 @@ function isInData($arr, $key, $val) {
     // Check which action was selected
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'POST':
-            echo 'POST';
-            break;
-        case 'GET':
-        
-        print_r($_GET['id']);
-        if(isset($_GET['id'])) {
-                $id = $_GET['id'];
-                $key = isInData($data->names, 'id', $id);
-                print_r(json_encode($data->names[$key], JSON_PRETTY_PRINT));
-            } else { echo 'Wrong id'; }
-            break;
-        case 'PUT':
-            echo 'PUT';
-            break;
-        case 'DELETE':
-            echo 'DELETE';
-            break;
-        default:
-
-            // Print json data to screen
-            print_r($jsonData);
-            break;
-        /*
-        case 'create':
-
-            // Delete object with id
-            if(isset($_GET['name']) && isset($_GET['password'])) {
-                $name = $_GET['name'];
-                $password = $_GET['password'];
+            echo "POST\n";
+            $req = file_get_contents('php://input');
+            $res = json_decode($req);
+            
+            // Add new user
+            if(isset($res->username) && isset($res->password)) {
+                $username = $res->username;
+                $password = $res->password;
                 
                 // Check if id exists in data, and get index
-                $key = isInData($data->names, 'username', $name);
+                $key = isInData($data->names, 'username', $username);
 
-                if (!$key) {
-                    echo $name . $password;
+                if(!isset($key)) {
+                    echo "Username ${username} is valid \n";
                     $obj = (object) [
                         'id' =>  end($data->names)->id + 1,
-                        'username' => $name,
+                        'username' => $username,
                         'password' => $password
                     ];
 
@@ -116,86 +95,113 @@ function isInData($arr, $key, $val) {
                     // Update file
                     file_put_contents("test.json", json_encode($data, JSON_PRETTY_PRINT));
 
-                    // Get the name of the deleted object and echo message
-                    $objName = $obj->username;
-
-                    echo "User ${objName} added!\n\n";
-                } else { echo "Name already in use \n\n"; }
+                    echo "User ${username} added!\n\n";
+                    break;
+                } else {
+                    echo "${username} is already in use! \n";
+                    break;
+                }
             } else { echo "Something's missing\n\n"; }
             
-            // Print json data to screen
-            print_r(json_encode($data, JSON_PRETTY_PRINT));
             break;
-        case 'read':
+        case 'GET':
+            echo "GET\n";
             if(isset($_GET['id'])) {
                 $id = $_GET['id'];
                 $key = isInData($data->names, 'id', $id);
-                print_r(json_encode($data->names[$key], JSON_PRETTY_PRINT));
-            } else { echo 'Wrong id'; }
-            break; 
-        case 'update':
-            if(isset($_GET['id'])) {
-                $id = $_GET['id'];
-                $key = isInData($data->names, 'id', $id);
-                $userObj = $data->names[$key];
-
-                if(isset($_GET['username'])){
-                    $isName = isInData($data->names, 'username', $_GET['username']);
-                    if (!$isName) {
-                        $userObj->username = $_GET['username'];
-                        $newName = $userObj->username;
-                        echo "Username changed to ${newName} \n";
-                    } else { echo "New username is in use\n"; }
+                if($key) {
+                    print_r(json_encode($data->names[$key], JSON_PRETTY_PRINT));
+                } else {
+                    echo "No user by id: ${id}";
                 }
-                if(isset($_GET['oldPassword'])){
-                    if ($userObj->password === $_GET['oldPassword']) {
-                        $userObj->password = $_GET['password'];
-                        echo "Password changed!\n";
-                    } else { echo "Passwords don't match"; }
-                }
-
-                // Update data by updating the array with updated copy of the array
-                $data->names = array_values($data->names);
-
-                // Update file
-                file_put_contents("test.json", json_encode($data, JSON_PRETTY_PRINT));
-            } else { echo 'Wrong id'; }
+            } else {
+                print_r(json_encode($data->names, JSON_PRETTY_PRINT));
+            }
             break;
-        case 'delete':
+        case 'PUT':
+            echo "PUT\n";
+            $req = file_get_contents('php://input');
+            $res = json_decode($req);
+            
+            // Update user with credentials
+            if(isset($res->old->username) && isset($res->old->password)) {
+                $username = $res->old->username;
+                $password = $res->old->password;
+                
+                $key = isInData($data->names, 'username', $username);
+                if($data->names[$key]->password === $password) {
+                    echo "Auth ok\n";
 
-            // Delete object with id
-            if(isset($_GET['id'])) {
-                $id = $_GET['id'];
+                    if(isset($res->new->username)) {
+                        $newUsername = $res->new->username;
+                        $checkNewName = isInData($data->names, 'username', $newUsername);
 
-                // Check if id exists in data, and get index
-                $key = isInData($data->names, 'id', $id);
+                        if(isset($checkNewName)) {
+                            echo "Username ${newUsername} in use\n";
+                            break;
+                        } else {
+                            $data->names[$key]->username = $newUsername;
+                        
+                            // Update data by updating the array with updated copy of the array
+                            $data->names = array_values($data->names);
+        
+                            // Update file
+                            file_put_contents("test.json", json_encode($data, JSON_PRETTY_PRINT));
+        
+                            echo "Username changed to ${newUsername}!\n\n";
+                            break;
+                        }
+                    }
+                    if(isset($res->new->password)) {
+                        $newPassword = $res->new->password;
+                        $data->names[$key]->password = $newPassword;
 
-                if (isset($obj)) {
+                        // Update data by updating the array with updated copy of the array
+                        $data->names = array_values($data->names);
+        
+                        // Update file
+                        file_put_contents("test.json", json_encode($data, JSON_PRETTY_PRINT));
 
-                    // Delete the data from the index
+                        echo "Password updated";
+                        break;
+                    }
+                } else { echo "Wrong credentials!"; }
+
+            } else { echo "Something's missing\n\n"; }
+
+            break;
+        case 'DELETE':
+            echo "DELETE\n";
+            $req = file_get_contents('php://input');
+            $res = json_decode($req);
+            
+            // Update user with credentials
+            if(isset($res->username) && isset($res->password)) {
+                $username = $res->username;
+                $password = $res->password;
+                
+                $key = isInData($data->names, 'username', $username);
+                if($data->names[$key]->password === $password) {
+                    echo "Auth ok\n";
+
                     unset($data->names[$key]);
 
                     // Update data by updating the array with updated copy of the array
                     $data->names = array_values($data->names);
-
+        
                     // Update file
                     file_put_contents("test.json", json_encode($data, JSON_PRETTY_PRINT));
 
-                    // Get the name of the deleted object and echo message
-                    $objName = $data->names[$key]->username;
-                    echo "User ${objName} deleted!\n\n";
-                } else { echo "ID not in array!\n\n"; }
-            }
+                    echo "User ${username} deleted!";
+                    break;
+                }
+            } else { echo "Wrong credentials!"; }
             
-            // Print json data to screen
-            print_r(json_encode($data, JSON_PRETTY_PRINT));
             break;
         default:
 
             // Print json data to screen
             print_r($jsonData);
             break;
-        */
     }
-
 ?>
