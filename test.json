@@ -34,6 +34,21 @@
             "id": 6,
             "username": "joku",
             "password": "$2y$10$gBfPBhinx1qL08Ji\/QXPKu7EPfahVd.auKZHwQRRCGhsQQbvSKnXC"
+        },
+        {
+            "id": 7,
+            "username": "maami",
+            "password": "$2y$10$3ZVBz3vAZptHIRSjOna39OOF8qzoP4ktOb8urAN2uInnmz0DFomxC"
+        },
+        {
+            "id": 8,
+            "username": "muumi",
+            "password": "$2y$10$0q.hoU01B2MwR0BVg\/znseYA1C3ziMjYeciZhUfTXBsFOk02\/rngG"
+        },
+        {
+            "id": 9,
+            "username": "meemi",
+            "password": "$2y$10$QYlVYXOdZlyaq4utWP7i4O1DpwO3g\/t3w0wOvLTGp\/cjBCsOHgi1K"
         }
     ]
 }

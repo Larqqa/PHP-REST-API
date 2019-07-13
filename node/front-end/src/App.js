@@ -1,73 +1,57 @@
-import React from 'react'
+import React, {useState} from 'react'
 import './App.css'
 import axios from 'axios'
 
 // API url
 const baseUrl = "http://localhost/restful-api/index.php"
 
-const getAll = () => {
+const getAll = (username) => {
   // Get all with get
-  const request = axios.get(baseUrl)
+  const request = axios.get(`${baseUrl}?username=${username}`)
   return request.then(response => response.data)
 }
 
-const getUser = obj => {
+const login = obj => {
   // Get all with get
-  const request = axios.get(`${baseUrl}?username=${obj.username}&password=${obj.password}`)
+  const request = axios.post(baseUrl, {action: 'login', obj: obj})
   return request.then(response => response.data)
 }
 
-const create = newObject => {
+const create = obj => {
   // Send new object with post
-  const request = axios.post(baseUrl, newObject)
+  const request = axios.post(baseUrl, {action: 'create', obj: obj})
   return request.then(response => response.data)
 }
 
 // Put requests reset the whole container object on back-end
 // so they dont need to be separated with identifiers
-const update = (oldObject, newObject) => {
+const update = (oldObj, newObj) => {
   // send object, with target id, update requested fields with put request
   const request = axios.put(baseUrl, {
-    old: oldObject,
-    new: newObject
+    old: oldObj,
+    new: newObj
   })
   return request.then(response => response.data)
 }
 
-const del = (newObject) => {
+const del = (obj) => {
   // Delete from server with id sent with delete request
-  const request = axios.delete(baseUrl, {data: newObject})
+  const request = axios.delete(baseUrl, {data: obj})
   return request.then(response => response.data)
 }
 
 
 function App() {
-  // Test object
-  const obj = {
-    username: 'muumi',
-    password: 'kalle',
-  }
-
-  const objUpdate = {
-    username: 'kille',
-    password: 'kalle',
-  }
-
-  const objUpdateName = {
-    username: 'kille'
-  }
-  
-  const objUpdatePass = {
-    password: 'kalle'
-  }
+const [user, setUser] = useState();
 
   // Test all
-  /*getAll().then(res => {
+  /*
+  getAll("muumipeikko").then(res => {
     console.log(res)
   }).catch(error => {
     console.log(error)
-  })*/
-  
+  })
+  */
   /*
   // Test single user
   getUser(obj).then(res => {
@@ -114,9 +98,13 @@ function App() {
       password: e.target[1].value
     }
 
-    getUser(user).then(res => {
-      console.log(res)
-    }).catch(error => {
+    login(user).then(res => {
+      if(res.id) {
+        setUser(res)
+      } else {
+        console.log(res)
+      }
+    }).catch((error) => {
       console.log(error)
     })
   }
@@ -162,9 +150,27 @@ function App() {
     )
   }
 
+  const handleLogout = () => {
+    setUser()
+  }
+
+  const User = () => {
+    if(user) {
+      return (
+        <>
+        <p>Logged in as user {user.username}</p>
+        <button onClick={handleLogout}>log out</button>
+        </>
+      )
+    }
+    return(
+      <Login />
+    )
+  }
+
   return (
     <div className="App">
-      <Login />
+      <User />
       <Register />
     </div>
   )
