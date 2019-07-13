@@ -58,15 +58,37 @@ function isInData($arr, $key, $val) {
     $jsonData = file_get_contents('test.json');
     $data = json_decode($jsonData);
 
-    print_r($_SERVER['REQUEST_METHOD']);
-
     $req = file_get_contents('php://input');
     $res = json_decode($req); 
 
-    var_dump($req);
+    //var_dump($req);
 
     // Check which action was selected
-    switch (isset($_GET['action']) ? $_GET['action'] : NULL) {
+    switch ($_SERVER['REQUEST_METHOD']) {
+        case 'POST':
+            echo 'POST';
+            break;
+        case 'GET':
+        
+        print_r($_GET['id']);
+        if(isset($_GET['id'])) {
+                $id = $_GET['id'];
+                $key = isInData($data->names, 'id', $id);
+                print_r(json_encode($data->names[$key], JSON_PRETTY_PRINT));
+            } else { echo 'Wrong id'; }
+            break;
+        case 'PUT':
+            echo 'PUT';
+            break;
+        case 'DELETE':
+            echo 'DELETE';
+            break;
+        default:
+
+            // Print json data to screen
+            print_r($jsonData);
+            break;
+        /*
         case 'create':
 
             // Delete object with id
@@ -173,6 +195,7 @@ function isInData($arr, $key, $val) {
             // Print json data to screen
             print_r($jsonData);
             break;
+        */
     }
 
 ?>

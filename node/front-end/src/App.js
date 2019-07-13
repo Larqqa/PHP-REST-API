@@ -11,6 +11,12 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
+const getUser = id => {
+  // Get all with get
+  const request = axios.get(baseUrl, {id: id})
+  return request.then(response => response.data)
+}
+
 const create = newObject => {
   // Send new object with post
   const request = axios.post(baseUrl, newObject)
@@ -41,7 +47,7 @@ function App() {
   }
 
   // Test request
-  del(obj).then(res => {
+  getUser(2).then(res => {
     console.log(res)
   }).catch(error => {
     console.log(error)
