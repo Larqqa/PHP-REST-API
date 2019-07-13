@@ -11,9 +11,9 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-const getUser = id => {
+const getUser = obj => {
   // Get all with get
-  const request = axios.get(`${baseUrl}?id=${id}`)
+  const request = axios.get(`${baseUrl}?username=${obj.username}&password=${obj.password}`)
   return request.then(response => response.data)
 }
 
@@ -45,7 +45,7 @@ function App() {
   // Test object
   const obj = {
     username: 'muumi',
-    password: 'meemu',
+    password: 'kalle',
   }
 
   const objUpdate = {
@@ -62,25 +62,22 @@ function App() {
   }
 
   // Test all
-  getAll().then(res => {
+  /*getAll().then(res => {
     console.log(res)
   }).catch(error => {
     console.log(error)
-  })
+  })*/
   
+  /*
   // Test single user
-  getUser(20).then(res => {
+  getUser(obj).then(res => {
     console.log(res)
   }).catch(error => {
     console.log(error)
   })
+  */
 
-  getUser(2).then(res => {
-    console.log(res)
-  }).catch(error => {
-    console.log(error)
-  })
-
+  /*
   // Test create user
   create(obj).then(res => {
     console.log(res)
@@ -106,9 +103,69 @@ function App() {
   }).catch(error => {
     console.log(error)
   })
+  */
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // CHANGE TO A POST FORMAT
+    const user = {
+      username: e.target[0].value,
+      password: e.target[1].value
+    }
+
+    getUser(user).then(res => {
+      console.log(res)
+    }).catch(error => {
+      console.log(error)
+    })
+  }
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    const user = {
+      username: e.target[0].value,
+      password: e.target[1].value
+    }
+    
+    create(user).then(res => {
+      console.log(res)
+    }).catch(error => {
+      console.log(error)
+    })
+
+  }
+
+  const Login = () => {
+    return (
+    <>
+      <p>login</p>
+      <form onSubmit={handleLogin}>
+        <input />
+        <input />
+        <button>Submit</button>
+      </form>
+    </>
+    )
+  }
+
+  const Register = () => {
+    return (
+      <>
+        <p>register</p>
+        <form onSubmit={handleRegister}>
+          <input />
+          <input />
+          <button>Submit</button>
+        </form>
+      </>
+    )
+  }
 
   return (
     <div className="App">
+      <Login />
+      <Register />
     </div>
   )
 }

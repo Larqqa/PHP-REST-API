@@ -1,28 +1,6 @@
 <?php
-/*
-{"names":[
-  {
-    "id": 0,
-    "username": "teemu",
-    "password": "123test"
-  },
-  {
-    "id": 2,
-    "username": "meemu",
-    "password": "123test"
-  },
-  {
-    "id": 3,
-    "username": "peemu",
-    "password": "123test"
-  },
-  {
-    "id": 4,
-    "username": "leemu",
-    "password": "123test"
-  }
-]}
-*/
+// password_hash("text123", PASSWORD_DEFAULT);
+// password_verify(input, user password in storage)
 
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -52,6 +30,24 @@ function isInData($arr, $key, $val) {
     }
     return NULL;
 }
+function authenticate($name, $pass) {
+    if(isset($name) && isset($name)) {
+        $username = $_GET['username'];
+
+        $key = isInData($data->names, 'username', $username);
+        if(isset($key)) {
+            $password = password_verify($_GET['password'], $data->names[$key]->password);
+        
+            if($password) {
+                echo "Auth ok\n";
+            } else {
+                echo "Auth not ok";
+            }
+        } else {
+            echo "No user by name ${username}";
+        }
+    }
+}
 
 // If action
     // Get and decode data
@@ -69,6 +65,7 @@ function isInData($arr, $key, $val) {
             echo "POST\n";
             $req = file_get_contents('php://input');
             $res = json_decode($req);
+            $res->password = password_hash($res->password, PASSWORD_BCRYPT);
             
             // Add new user
             if(isset($res->username) && isset($res->password)) {
@@ -106,6 +103,25 @@ function isInData($arr, $key, $val) {
             break;
         case 'GET':
             echo "GET\n";
+            
+            // Update user with credentials
+            if(isset($_GET['username']) && isset($_GET['password'])) {
+                $username = $_GET['username'];
+
+                $key = isInData($data->names, 'username', $username);
+                if(isset($key)) {
+                    $password = password_verify($_GET['password'], $data->names[$key]->password);
+                
+                    if($password) {
+                        echo "Auth ok\n";
+                    } else {
+                        echo "Auth not ok";
+                    }
+                } else {
+                    echo "No user by name ${username}";
+                }
+            }
+
             if(isset($_GET['id'])) {
                 $id = $_GET['id'];
                 $key = isInData($data->names, 'id', $id);
@@ -115,7 +131,7 @@ function isInData($arr, $key, $val) {
                     echo "No user by id: ${id}";
                 }
             } else {
-                print_r(json_encode($data->names, JSON_PRETTY_PRINT));
+                //print_r(json_encode($data->names, JSON_PRETTY_PRINT));
             }
             break;
         case 'PUT':
