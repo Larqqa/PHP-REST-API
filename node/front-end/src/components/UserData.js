@@ -2,7 +2,7 @@ import React from 'react'
 import httpReq from '../services/httpReq'
 
 
-const UserData = ({u, setUser}) => {
+const UserData = ({u, setUser, setMessage, setMessageStatus, setTimer}) => {
   const handleNameChange = (e) => {
     e.preventDefault()
     const user = {
@@ -13,8 +13,13 @@ const UserData = ({u, setUser}) => {
     httpReq.update(user).then(res => {
       if(typeof res === 'object') {
         setUser(res)
+        setMessage(`Username changed to ${res.username}!`)
+        setMessageStatus('success')
+        setTimer(2000)
       } else {
-        console.log(res)
+        setMessage(res)
+        setMessageStatus('alert')
+        setTimer(2000)
       }
     })
   }
@@ -29,9 +34,13 @@ const UserData = ({u, setUser}) => {
 
     httpReq.update(user).then(res => {
       if(typeof res === 'object') {
-        setUser(res)
+        setMessage(res.mes)
+        setMessageStatus('success')
+        setTimer(2000)
       } else {
-        console.log(res)
+        setMessage(res)
+        setMessageStatus('error')
+        setTimer(2000)
       }
     })
   }
@@ -39,37 +48,48 @@ const UserData = ({u, setUser}) => {
   const handleDelete = (e) => {
     e.preventDefault()
 
+    if(!window.confirm("Are you sure you want to delete your account? This is permanent!")) return
+
     const user = {
       id: u.id,
     }
 
     httpReq.del(user).then(res => {
-      console.log(res)
       setUser()
+      setMessage(res)
+      setMessageStatus('alert')
+      setTimer(2000)
     })
   }
 
   const handleLogout = () => {
     setUser()
+    setMessageStatus('success')
+    setMessage(`Logged out!`)
+    setTimer(2000)
   }
   
   return (
     <>
-    <p>Logged in as user {u.username}</p>
-    <button onClick={handleLogout}>log out</button>
-
-    <form value={u.id} onSubmit={handleNameChange} >
-      <p>Change name</p>
-      <input />
-      <button>Submit</button>
-    </form>
-    <form onSubmit={handlePasswordChange} >
-      <p>Change password</p>
-      <input />
-      <input />
-      <button>Submit</button>
-    </form>
-    <button onClick={handleDelete}>Delete User</button>
+      <div className="logged">
+        <h3>Logged in as user {u.username}</h3>
+        <button className="btnAction" onClick={handleLogout}>log out</button>
+      </div>
+      <form id="editName" value={u.id} onSubmit={handleNameChange} >
+        <p>Change name</p>
+        <input placeholder="Username" placeholder={u.username} required />
+        <button>Send</button>
+      </form>
+      <form id="editPassword" onSubmit={handlePasswordChange} >
+        <p>Change password</p>
+        <input placeholder="Old Password" type="password" required />
+        <input placeholder="New Password" type="password" required />
+        <button>Send</button>
+      </form>
+      <div className="delete">
+        <p>Delete user</p>
+        <button onClick={handleDelete}>Delete User</button>
+      </div>
     </>
   )
 }

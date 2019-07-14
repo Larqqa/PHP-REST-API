@@ -1,7 +1,7 @@
 import React from 'react'
 import httpReq from '../services/httpReq'
 
-const Register = ({setToggle}) => {
+const Register = ({setUser, setMessage, setMessageStatus, setTimer}) => {
   const handleRegister = (e) => {
     e.preventDefault()
     const user = {
@@ -10,21 +10,32 @@ const Register = ({setToggle}) => {
     }
     
     httpReq.create(user).then(res => {
-      console.log(res)
-      setToggle(false)
+      if(typeof res === 'object') {
+        setUser(res)
+        setMessage(`User ${res.username} created!`)
+        setMessageStatus('success')
+        setTimer(2000)
+      } else {
+        setMessage(res)
+        setMessageStatus('alert')
+        setTimer(2000)
+      }
     }).catch(error => {
-      console.log(error)
+      setMessage(error)
+      setMessageStatus('error')
+      setTimer(2000)
     })
   
   }
   
   return (
     <>
-      <p>register</p>
-      <form onSubmit={handleRegister}>
-        <input />
-        <input />
-        <button>Submit</button>
+      <form id="register" className="hide" onSubmit={handleRegister}>
+        <div>
+        <input placeholder="Username" required />
+        <input placeholder="Password" type="password" required />
+        </div>
+        <button>Register</button>
       </form>
     </>
   )

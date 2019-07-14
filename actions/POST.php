@@ -39,11 +39,13 @@ if($postData->action === 'create') {
     // Get user data to be added
     $postData = $postData->obj;
 
-    // Hash password
-    $postData->password = password_hash($postData->password, PASSWORD_BCRYPT);
+    if($postData->username  !== NULL && $postData->password  !== NULL) {
 
-    // If name and password are set
-    if(isset($postData->username) && isset($postData->password)) {
+        // Hash password
+        $postData->password = password_hash($postData->password, PASSWORD_BCRYPT);
+        
+
+        // If name and password are set
         $username = $postData->username;
         $password = $postData->password;
         
@@ -70,13 +72,20 @@ if($postData->action === 'create') {
             // Update file
             file_put_contents("$dbUrl", json_encode($data, JSON_PRETTY_PRINT));
 
-            echo "User ${username} added!\n";
+            // Send user object as response
+            $res = (object) [
+                'id' =>  $id,
+                'username' => $username
+            ];
+            
+            print_r(json_encode($res, JSON_PRETTY_PRINT));
             return false;
         } else {
             echo "The name ${username} is already in use! \n";
             return false;
         }
     } else { echo "No username or password given!\n"; }
+    return false;
 }
 
 // If deleting a user
@@ -100,6 +109,6 @@ if($postData->action === 'delete') {
     // Update file
     file_put_contents("$dbUrl", json_encode($data, JSON_PRETTY_PRINT));
 
-    echo "User ${username} removed!";
+    echo "User ${username} deleted! Bye :(";
 }
 ?>

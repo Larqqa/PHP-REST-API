@@ -1,8 +1,7 @@
-import React from 'react'
+import React, {useState} from 'react'
 import httpReq from '../services/httpReq'
 
-const Login = ({setUser}) => {
-  
+const Login = ({setUser, setMessage, setMessageStatus, setTimer}) => {
   const handleLogin = (e) => {
     e.preventDefault()
   
@@ -15,21 +14,29 @@ const Login = ({setUser}) => {
     httpReq.login(user).then(res => {
       if(typeof res === 'object') {
         setUser(res)
+        setMessage(`Logged in as ${res.username}`)
+        setMessageStatus('success')
+        setTimer(2000)
       } else {
-        console.log(res)
+        setMessage(res)
+        setMessageStatus('error')
+        setTimer(2000)
       }
     }).catch((error) => {
-      console.log(error)
+      setMessage(error)
+      setMessageStatus('error')
+      setTimer(2000)
     })
   }
 
   return (
   <>
-    <p>login</p>
-    <form onSubmit={handleLogin}>
-      <input />
-      <input />
-      <button>Submit</button>
+    <form id="login" onSubmit={handleLogin}>
+      <div>
+        <input placeholder="Username" required />
+        <input placeholder="Password" type="password" required />
+      </div>
+      <button>Login</button>
     </form>
   </>
   )

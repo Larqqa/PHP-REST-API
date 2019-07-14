@@ -63,7 +63,11 @@ if(isset($putData->password)) {
         // Update file
         file_put_contents($dbUrl, json_encode($data, JSON_PRETTY_PRINT));
 
-        echo "Password was changed!";
+        $res = (object )[
+            'mes' => 'Password was changed!'
+        ];
+
+        print_r(json_encode($res));
         return false;
     } else { echo "Wrong password!"; }
     return false;

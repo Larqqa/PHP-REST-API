@@ -1,0 +1,169 @@
+// Colors:
+// https://flatuicolors.com/palette/se
+
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono|Ubuntu&display=swap');
+
+// VARS
+$headFont: 'Ubuntu', sans-serif;
+$textFont: 'Roboto Mono', monospace;
+
+$darkText: rgba(30, 39, 46,1.0);
+$lightText: rgba(250,255,255,1);
+$lightBG: rgba(250,255,255,1);
+$tabBG: rgba(210, 218, 226,1.0);
+$buttonBG: rgba(52, 231, 228,1.0);
+$buttonHover: rgba(0, 216, 214,1.0);
+
+
+// MAIN
+p, a, li, button, input, span, i, b {
+  font-family: $textFont;
+  font-size: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $headFont;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  
+  &.hide {
+    display: none;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+input {
+  margin: .25rem 0;
+  padding: .8rem;
+}
+
+button {
+  color: $lightText;
+  cursor: pointer;
+  background-color: $buttonBG;
+  margin: 0em;
+  padding: 1rem;
+  border-width: 0px;
+  transition: background-color .1s, color .1s;
+
+  &:hover {
+    background-color:$buttonHover;
+  }
+
+  &:focus {
+    outline:0;
+  }
+}
+
+.btnAction {
+  color: $darkText;
+  background-color: transparent;
+  flex-grow: 1;
+
+  &:hover {
+    background-color: $tabBG;
+  }
+
+  &.active {
+    background-color: $tabBG;
+  }
+}
+
+#messages {
+  position: absolute;
+  top: 0px;
+  margin-top: 1rem;
+  padding: 1rem 3rem;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity .05s ease-in;
+  p {
+    margin: 0;
+    padding: 0;
+  }
+  &.show {
+    transition: opacity .1s ease-in;
+    opacity: 1;
+  }
+  &.success {
+    background-color: rgba(11, 232, 129,1.0);
+    color: $darkText;
+
+  }
+  &.alert {
+    background-color: rgba(255, 221, 89,1.0);
+    color: $darkText;
+  }
+  &.error {
+    background-color: rgba(245, 59, 87,1.0);
+    color: $lightText;
+  }
+}
+
+html {
+  font-size: 100%;
+
+  body {
+    margin: 0;
+    padding: 0;
+
+    .App {
+      position: relative;
+      width: 100vW;
+      height: 100vH;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      background:
+      linear-gradient(50deg, rgba(87, 95, 207,1.0), rgba(255,0,0,0) 70.71%),
+      linear-gradient(230deg, rgba(52, 231, 228,1.0), rgba(0,0,0,0) 70.71%);
+
+      .userActions {
+        background: $lightBG;
+        position: relative;
+        max-width: 400px;
+        padding: 1rem;
+        .selectors {
+          display: flex;
+          flex-direction: row;
+          align-content: stretch;
+        }
+      }
+      
+      .userPage {
+        transition: opacity 1s;
+        background: $lightBG;
+        position: relative;
+        max-width: 500px;
+        width: 100%;
+        padding: 1rem;
+        .logged {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          button {
+            flex-grow: 0;
+          }
+        }
+
+        .delete button {
+          width: 100%;
+        }
+
+      }
+    }
+  }
+}
