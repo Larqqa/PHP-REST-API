@@ -14,6 +14,16 @@
             "id": 3,
             "username": "sda",
             "password": "$2y$10$.4aUQq\/uPrYftmo7ywxcE.q1iDvGGFD.ZMTqjC726kqt8RtmwTj.S"
+        },
+        {
+            "id": 4,
+            "username": "register",
+            "password": "$2y$10$aB5TWl8WKS80Dne621KzHeclg.QZKCew1aKcEvWaFJCeQKkIMWruq"
+        },
+        {
+            "id": 5,
+            "username": "asd",
+            "password": "$2y$10$JXgkXb1NE1nPvvOQabDJCOvwK\/looGmLu.S0rp3wPektQjcyOnJ16"
         }
     ]
 }

@@ -6,6 +6,8 @@ import httpReq from './services/httpReq'
 
 function App() {
   const [user, setUser] = useState();
+  const [toggle, setToggle] = useState(true);
+
 
   // Test search
   httpReq.search("muumipeikko").then(res => {
@@ -14,10 +16,20 @@ function App() {
     console.log(error)
   })
 
+  const toggleForm = () => {
+    toggle ? setToggle(false) : setToggle(true)
+  }
+
+  const ToggleForm = () => {
+    return toggle ?
+      <Register setToggle={setToggle} /> :
+      <User user={user} setUser={setUser} />
+  }
+
   return (
     <div className="App">
-      <Register />
-      <User user={user} setUser={setUser} />
+      <button onClick={toggleForm}>{toggle ? "register" : "login"}</button>
+      <ToggleForm />
     </div>
   )
 }
