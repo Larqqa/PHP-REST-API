@@ -5,7 +5,7 @@ import axios from 'axios'
 // API url
 const baseUrl = "http://localhost/restful-api/index.php"
 
-const getAll = (username) => {
+const search = (username) => {
   // Get all with get
   const request = axios.get(`${baseUrl}?username=${username}`)
   return request.then(response => response.data)
@@ -25,18 +25,15 @@ const create = obj => {
 
 // Put requests reset the whole container object on back-end
 // so they dont need to be separated with identifiers
-const update = (oldObj, newObj) => {
+const update = (obj) => {
   // send object, with target id, update requested fields with put request
-  const request = axios.put(baseUrl, {
-    old: oldObj,
-    new: newObj
-  })
+  const request = axios.put(baseUrl, obj)
   return request.then(response => response.data)
 }
 
 const del = (obj) => {
   // Delete from server with id sent with delete request
-  const request = axios.delete(baseUrl, {data: obj})
+  const request = axios.post(baseUrl, {action: 'delete', obj: obj})
   return request.then(response => response.data)
 }
 
@@ -44,53 +41,20 @@ const del = (obj) => {
 function App() {
 const [user, setUser] = useState();
 
-  // Test all
-  /*
-  getAll("muumipeikko").then(res => {
-    console.log(res)
-  }).catch(error => {
-    console.log(error)
-  })
-  */
-  /*
-  // Test single user
-  getUser(obj).then(res => {
-    console.log(res)
-  }).catch(error => {
-    console.log(error)
-  })
-  */
-
-  /*
-  // Test create user
-  create(obj).then(res => {
-    console.log(res)
+  // Test search
+  search("muumipeikko").then(res => {
+    //console.log(res)
   }).catch(error => {
     console.log(error)
   })
   
-  // Test update user
-  update(obj, objUpdateName).then(res => {
-    console.log(res)
-  }).catch(error => {
-    console.log(error)
-  })
-  update(obj, objUpdatePass).then(res => {
-    console.log(res)
-  }).catch(error => {
-    console.log(error)
-  })
-    
-  // Test delete user
-  del(objUpdate).then(res => {
-    console.log(res)
-  }).catch(error => {
-    console.log(error)
-  })
-  */
-
+  
+  const handleLogout = () => {
+    setUser()
+  }
+  
   const handleLogin = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     // CHANGE TO A POST FORMAT
     const user = {
@@ -99,7 +63,7 @@ const [user, setUser] = useState();
     }
 
     login(user).then(res => {
-      if(res.id) {
+      if(typeof res === 'object') {
         setUser(res)
       } else {
         console.log(res)
@@ -110,7 +74,7 @@ const [user, setUser] = useState();
   }
 
   const handleRegister = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     const user = {
       username: e.target[0].value,
       password: e.target[1].value
@@ -150,17 +114,78 @@ const [user, setUser] = useState();
     )
   }
 
-  const handleLogout = () => {
-    setUser()
+  const UserData = ({u}) => {
+    const handleNameChange = (e) => {
+      e.preventDefault()
+      const user = {
+        id: u.id,
+        username: e.target[0].value,
+      }
+  
+      update(user).then(res => {
+        if(typeof res === 'object') {
+          setUser(res)
+        } else {
+          console.log(res)
+        }
+      })
+    }
+  
+    const handlePasswordChange = (e) => {
+      e.preventDefault()
+      const user = {
+        id: u.id,
+        password: e.target[0].value,
+        newPassword: e.target[1].value,
+      }
+  
+      update(user).then(res => {
+        if(typeof res === 'object') {
+          setUser(res)
+        } else {
+          console.log(res)
+        }
+      })
+    }
+
+    const handleDelete = (e) => {
+      e.preventDefault()
+
+      const user = {
+        id: u.id,
+      }
+  
+      del(user).then(res => {
+        console.log(res)
+        setUser()
+      })
+    }
+
+    return (
+      <>
+      <p>Logged in as user {user.username}</p>
+      <button onClick={handleLogout}>log out</button>
+
+      <form value={u.id} onSubmit={handleNameChange} >
+        <p>Change name</p>
+        <input />
+        <button>Submit</button>
+      </form>
+      <form onSubmit={handlePasswordChange} >
+        <p>Change password</p>
+        <input />
+        <input />
+        <button>Submit</button>
+      </form>
+      <button onClick={handleDelete}>Delete User</button>
+      </>
+    )
   }
 
   const User = () => {
     if(user) {
-      return (
-        <>
-        <p>Logged in as user {user.username}</p>
-        <button onClick={handleLogout}>log out</button>
-        </>
+      return(
+        <UserData u={user} />
       )
     }
     return(
@@ -170,8 +195,8 @@ const [user, setUser] = useState();
 
   return (
     <div className="App">
-      <User />
       <Register />
+      <User />
     </div>
   )
 }

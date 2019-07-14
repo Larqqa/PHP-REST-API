@@ -2,53 +2,8 @@
     "names": [
         {
             "id": 0,
-            "username": "muumipeikko",
-            "password": "$2y$10$I3FKJq9orn1acIKOsvL9MeMeYppz.N0pRD0xe.n0ZtPyswj33Kthe"
-        },
-        {
-            "id": 1,
-            "username": "muumimamma",
-            "password": "$2y$10$HlJPL7jZ7iyoNwtqQSv2ouTUafvrYewDtQ.Ho7en6LE8zK\/ss6yx."
-        },
-        {
-            "id": 2,
-            "username": "muumipappa",
-            "password": "$2y$10$qphF\/rjdxhTKc2COF4rGkOmOf25YtZmuYAtdwFP.Bwoiv.zBh8l22"
-        },
-        {
-            "id": 3,
-            "username": "niiskuneiti",
-            "password": "$2y$10$MdVjbwN3MqoqWDsSXjSPJee5IXspjNR89aRPZcPd.ILlMn95S6E.G"
-        },
-        {
-            "id": 4,
-            "username": "pikkumyy",
-            "password": "$2y$10$EFN7l9psPn2sWooCi1mMOeSL5V..nP4X.waf7BPPQFCeC\/8Z3MAT6"
-        },
-        {
-            "id": 5,
-            "username": "nuuskamuikkunen",
-            "password": "$2y$10$n7HTZ.qPU3RKz49nsbw.WuWuOzIStWB8APXb602ThEjvbc\/ZHgZNW"
-        },
-        {
-            "id": 6,
-            "username": "joku",
-            "password": "$2y$10$gBfPBhinx1qL08Ji\/QXPKu7EPfahVd.auKZHwQRRCGhsQQbvSKnXC"
-        },
-        {
-            "id": 7,
-            "username": "maami",
-            "password": "$2y$10$3ZVBz3vAZptHIRSjOna39OOF8qzoP4ktOb8urAN2uInnmz0DFomxC"
-        },
-        {
-            "id": 8,
-            "username": "muumi",
-            "password": "$2y$10$0q.hoU01B2MwR0BVg\/znseYA1C3ziMjYeciZhUfTXBsFOk02\/rngG"
-        },
-        {
-            "id": 9,
-            "username": "meemi",
-            "password": "$2y$10$QYlVYXOdZlyaq4utWP7i4O1DpwO3g\/t3w0wOvLTGp\/cjBCsOHgi1K"
+            "username": "",
+            "password": "$2y$10$p3gE24VbbxbqrB8QU0rZCO3rZOec7YqIHJrYHVu1xnNldpP.kEL\/m"
         }
     ]
 }

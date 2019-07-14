@@ -1,22 +1,23 @@
 <?php
-// password_hash("text123", PASSWORD_DEFAULT);
-// password_verify(input, user password in storage)
 
 // Allow from any origin
+
 if (isset($_SERVER['HTTP_ORIGIN'])) {
-    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
+    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");   // Set access from incoming source
+    header('Access-Control-Allow-Credentials: true');                   // Allow responses to fronend ie. cookies etc.
+    header('Access-Control-Max-Age: 86400');                            // Cache for 1 day
 }
 
 // Access-Control headers are received during OPTIONS requests
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
+    // Id control request methods, allow GET POST PUT OPTIONS
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");         
+        header("Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS");         
 
+    // if access request headers, allow access request headers 
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-        header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
 
     exit(0);
 }
@@ -30,196 +31,37 @@ function isInData($arr, $key, $val) {
     }
     return NULL;
 }
-function authenticate($name, $pass) {
-    if(isset($name) && isset($name)) {
-        $username = $_GET['username'];
 
-        $key = isInData($data->names, 'username', $username);
-        if(isset($key)) {
-            $password = password_verify($_GET['password'], $data->names[$key]->password);
-        
-            if($password) {
-                echo "Auth ok\n";
-            } else {
-                echo "Auth not ok";
-            }
-        } else {
-            echo "No user by name ${username}";
-        }
-    }
+$dbUrl = './actions/test.json';
+
+// Get and decode data
+$jsonData = file_get_contents($dbUrl);
+$data = json_decode($jsonData);
+
+// Init names if not found
+if(!isset($data->names)) {
+    $data = ['names' => []];
+
+    // Update file
+    file_put_contents($dbUrl, json_encode($data, JSON_PRETTY_PRINT));
 }
 
-// If action
-    // Get and decode data
-    $jsonData = file_get_contents('test.json');
-    $data = json_decode($jsonData);
+// Select action
+switch ($_SERVER['REQUEST_METHOD']) {
+    case 'POST':
+        require_once './actions/POST.php';
+        break;
 
-    $req = file_get_contents('php://input');
-    $res = json_decode($req); 
+    case 'GET':
+        require_once './actions/GET.php';
+        break;
 
-    //var_dump($req);
-
-    // Check which action was selected
-    switch ($_SERVER['REQUEST_METHOD']) {
-        case 'POST':
-            $req = file_get_contents('php://input');
-            $res = json_decode($req);
-
-            if($res->action === 'login') {
-                $key = isInData($data->names, 'username', $res->obj->username);
-                
-                if($key) {
-                    if(password_verify($res->obj->password, $data->names[$key]->password)) {
-                        $res = (object) [
-                            'id' =>  $data->names[$key]->id,
-                            'username' => $data->names[$key]->username
-                        ];
-
-                        print_r(json_encode($res, JSON_PRETTY_PRINT));
-
-                    } else { echo "Wrong username or password!"; }
-                } else { echo "no user by that name"; }
-                break;
-            }
-
-            if($res->action === 'create') {
-                $res = $res->obj;
-                $res->password = password_hash($res->password, PASSWORD_BCRYPT);
-            
-                // Add new user
-                if(isset($res->username) && isset($res->password)) {
-                    $username = $res->username;
-                    $password = $res->password;
-                    
-                    // Check if id exists in data, and get index
-                    $key = isInData($data->names, 'username', $username);
-    
-                    if(!isset($key)) {
-                        echo "Username ${username} is valid \n";
-                        $obj = (object) [
-                            'id' =>  end($data->names)->id + 1,
-                            'username' => $username,
-                            'password' => $password
-                        ];
-    
-                        // Delete the data from the index
-                        array_push($data->names, $obj);
-    
-                        // Update data by updating the array with updated copy of the array
-                        $data->names = array_values($data->names);
-    
-                        // Update file
-                        file_put_contents("test.json", json_encode($data, JSON_PRETTY_PRINT));
-    
-                        echo "User ${username} added!\n\n";
-                        break;
-                    } else {
-                        echo "${username} is already in use! \n";
-                        break;
-                    }
-                } else { echo "Something's missing\n\n"; }
-            }
-            break;
-
-        case 'GET':
-            if(isset($_GET['username'])) {
-                $username = $_GET['username'];
-                $key = isInData($data->names, 'username', $username);
-                if(isset($key)) {
-                    $res = (object) [
-                        'id' => $data->names[$key]->id,
-                        'username' => $data->names[$key]->username
-                    ];
-                    print_r(json_encode($res, JSON_PRETTY_PRINT));
-                }
-            }
-
-
-            break;
-
-        case 'PUT':
-            echo "PUT\n";
-
-            $req = file_get_contents('php://input');
-            $res = json_decode($req);
-            
-            // Update user with credentials
-            if(isset($res->old->username) && isset($res->old->password)) {
-                $username = $res->old->username;
-                $password = $res->old->password;
-                
-                $key = isInData($data->names, 'username', $username);
-                if($data->names[$key]->password === $password) {
-                    echo "Auth ok\n";
-
-                    if(isset($res->new->username)) {
-                        $newUsername = $res->new->username;
-                        $checkNewName = isInData($data->names, 'username', $newUsername);
-
-                        if(isset($checkNewName)) {
-                            echo "Username ${newUsername} in use\n";
-                            break;
-                        } else {
-                            $data->names[$key]->username = $newUsername;
-                        
-                            // Update data by updating the array with updated copy of the array
-                            $data->names = array_values($data->names);
-        
-                            // Update file
-                            file_put_contents("test.json", json_encode($data, JSON_PRETTY_PRINT));
-        
-                            echo "Username changed to ${newUsername}!\n\n";
-                            break;
-                        }
-                    }
-                    if(isset($res->new->password)) {
-                        $newPassword = $res->new->password;
-                        $data->names[$key]->password = $newPassword;
-
-                        // Update data by updating the array with updated copy of the array
-                        $data->names = array_values($data->names);
-        
-                        // Update file
-                        file_put_contents("test.json", json_encode($data, JSON_PRETTY_PRINT));
-
-                        echo "Password updated";
-                        break;
-                    }
-                } else { echo "Wrong credentials!"; }
-
-            } else { echo "Something's missing\n\n"; }
-
-            break;
-        case 'DELETE':
-            echo "DELETE\n";
-            $req = file_get_contents('php://input');
-            $res = json_decode($req);
-            
-            // Update user with credentials
-            if(isset($res->username) && isset($res->password)) {
-                $username = $res->username;
-                $password = $res->password;
-                
-                $key = isInData($data->names, 'username', $username);
-                if($data->names[$key]->password === $password) {
-                    echo "Auth ok\n";
-
-                    unset($data->names[$key]);
-
-                    // Update data by updating the array with updated copy of the array
-                    $data->names = array_values($data->names);
-        
-                    // Update file
-                    file_put_contents("test.json", json_encode($data, JSON_PRETTY_PRINT));
-
-                    echo "User ${username} deleted!";
-                    break;
-                }
-            } else { echo "Wrong credentials!"; }
-            
-            break;
-        default:
-            echo "Something went wrong, use some http request to try again!";
-            break;
-    }
+    case 'PUT':
+        require_once './actions/PUT.php';
+        break;
+    default:
+        // Default should return nothing, as GET exists
+        echo "Something went wrong, try some http requests and try again!";
+        break;
+}
 ?>
