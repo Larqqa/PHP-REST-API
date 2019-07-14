@@ -18,6 +18,6 @@ if(isset($_GET['username'])) {
   }
 } else {
   // Default message
-  echo "try using a HTML request to get data. You can also do a username search, for example use ?username=muumi";
+  echo "try using a HTML request to get data. You can also do a username search using ?username=name";
 }
 ?>

@@ -1,14 +1,19 @@
 {
     "names": [
         {
-            "id": 0,
-            "username": "",
-            "password": "$2y$10$wGQFx.HQpOSRHUXbE\/iUYekW1FZ4XmXin.WvIlEVtMTFL8pGe6ho6"
-        },
-        {
             "id": 1,
             "username": "muumipeikko",
             "password": "$2y$10$gAW8TXxH.28tT9BRAwjq6..tbY4MyhZtogen0QlqW0\/nTzwCX9ZFu"
+        },
+        {
+            "id": 2,
+            "username": "moi",
+            "password": "$2y$10$VVu5vomEkCsGvSA8m2cRvO9bO4tM3VfHZnTddqPov58Sdyx5nKkja"
+        },
+        {
+            "id": 3,
+            "username": "sda",
+            "password": "$2y$10$.4aUQq\/uPrYftmo7ywxcE.q1iDvGGFD.ZMTqjC726kqt8RtmwTj.S"
         }
     ]
 }
