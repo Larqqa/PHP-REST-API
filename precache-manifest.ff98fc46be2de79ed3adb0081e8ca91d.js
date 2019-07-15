@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "cce4c0e92c92510aeadff61bc89a87cc",
+    "revision": "790dc116dcddd26c8976c65e5ef7dd0f",
     "url": "/PHP-REST-API/index.html"
   },
   {
-    "revision": "f774a850f7673a7730b4",
+    "revision": "307938d8c4d8c029bcf1",
     "url": "/PHP-REST-API/static/css/main.8c352aca.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/PHP-REST-API/static/js/2.66f27ac9.chunk.js"
   },
   {
-    "revision": "f774a850f7673a7730b4",
-    "url": "/PHP-REST-API/static/js/main.aa03b517.chunk.js"
+    "revision": "307938d8c4d8c029bcf1",
+    "url": "/PHP-REST-API/static/js/main.e107f3a2.chunk.js"
   },
   {
     "revision": "962a7c5c4d0dc8e135c8",
