@@ -15,6 +15,13 @@ const login = obj => {
   return request.then(response => response.data)
 }
 
+const logout = obj => {
+  // Get all with get
+  const request = axios.post(baseUrl, {action: 'logout', obj: obj})
+  return request.then(response => response.data)
+}
+
+
 const create = obj => {
   // Send new object with post
   const request = axios.post(baseUrl, {action: 'create', obj: obj})
@@ -35,4 +42,4 @@ const del = (obj) => {
   return request.then(response => response.data)
 }
 
-export default { search, login, create, update, del }
+export default { search, login, logout, create, update, del }

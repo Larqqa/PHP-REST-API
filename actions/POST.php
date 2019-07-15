@@ -19,10 +19,20 @@ if($postData->action === 'login') {
         // Verify that password is correct
         if(password_verify($postData->obj->password, $data->names[$key]->password)) {
 
+            // Add a unique login key
+            $data->names[$key]->loginKey = substr(md5(rand()), 0, 30);
+            
+            // Update data with updated copy of the array to avoid duplicates
+            $data->names = array_values($data->names);
+
+            // Update file
+            file_put_contents("$dbUrl", json_encode($data, JSON_PRETTY_PRINT));
+
             // Make response object
             $postData = (object) [
                 'id' =>  $data->names[$key]->id,
-                'username' => $data->names[$key]->username
+                'username' => $data->names[$key]->username,
+                'loginKey' => $data->names[$key]->loginKey
             ];
 
             // Encode and send response
@@ -31,6 +41,27 @@ if($postData->action === 'login') {
         } else { echo "Incorrect username & password combination!"; }
     } else { echo "No user by that name!"; }
     return false;
+}
+
+// If logging out
+if($postData->action === 'logout') {
+
+    // Get id to be removed
+    $id = $postData->obj->id;
+
+    // Get index in database
+    $id = isInData($data->names, 'id', $id);
+
+    // Remove from index
+    $data->names[$id]->loginKey = NULL;
+
+    // Update data with updated copy of the array to avoid duplicates
+    $data->names = array_values($data->names);
+
+    // Update file
+    file_put_contents("$dbUrl", json_encode($data, JSON_PRETTY_PRINT));
+
+    echo "User ${username} deleted! Bye :(";
 }
 
 // If creating a new user
@@ -60,7 +91,8 @@ if($postData->action === 'create') {
             $obj = (object) [
                 'id' =>  $id,
                 'username' => $username,
-                'password' => $password
+                'password' => $password,
+                'loginKey' => substr(md5(rand()), 0, 30)
             ];
 
             // Add the user to db
@@ -75,7 +107,8 @@ if($postData->action === 'create') {
             // Send user object as response
             $res = (object) [
                 'id' =>  $id,
-                'username' => $username
+                'username' => $username,
+                'loginKey' => $obj->loginKey
             ];
             
             print_r(json_encode($res, JSON_PRETTY_PRINT));
@@ -97,18 +130,25 @@ if($postData->action === 'delete') {
     // Get index in database
     $id = isInData($data->names, 'id', $id);
     
-    // Get username
-    $username = $data->names[$id]->username;
+    // Authenticate user
+    if($data->names[$id]->loginKey === $postData->obj->loginKey) {
+        // Get username
+        $username = $data->names[$id]->username;
 
-    // Remove from index
-    unset($data->names[$id]);
+        // Remove from index
+        unset($data->names[$id]);
 
-    // Update data with updated copy of the array to avoid duplicates
-    $data->names = array_values($data->names);
+        // Update data with updated copy of the array to avoid duplicates
+        $data->names = array_values($data->names);
 
-    // Update file
-    file_put_contents("$dbUrl", json_encode($data, JSON_PRETTY_PRINT));
+        // Update file
+        file_put_contents("$dbUrl", json_encode($data, JSON_PRETTY_PRINT));
 
-    echo "User ${username} deleted! Bye :(";
+        echo "User ${username} deleted! Bye :(";
+    } else {
+        echo "Something went wrong";
+    }
+
+
 }
 ?>

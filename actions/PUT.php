@@ -15,31 +15,36 @@ if(isset($putData->username)) {
     // Get index of id in db
     $id = isInData($data->names, 'id', $id);
 
-    // Check if new username is already in use
-    $checkNewName = isInData($data->names, 'username', $newUsername);
-    if(isset($checkNewName)) {
-        echo "Username ${newUsername} is already in use!\n";
-        return false;
+    // Authenticate user
+    if($data->names[$id]->loginKey === $putData->loginKey) {
+
+        // Check if new username is already in use
+        $checkNewName = isInData($data->names, 'username', $newUsername);
+        if(isset($checkNewName)) {
+            echo "Username ${newUsername} is already in use!\n";
+            return false;
+        } else {
+
+            // Set new username
+            $data->names[$id]->username = $newUsername;
+        
+            // Update data with updated copy of the array to avoid duplicates
+            $data->names = array_values($data->names);
+
+            // Update file
+            file_put_contents($dbUrl, json_encode($data, JSON_PRETTY_PRINT));
+
+            // Prepare response object
+            $res = (object) [
+                'username' => $data->names[$id]->username
+            ];
+
+            // Send new user as response
+            print_r(json_encode($res));
+            return false;
+        }
     } else {
-
-        // Set new username
-        $data->names[$id]->username = $newUsername;
-    
-        // Update data with updated copy of the array to avoid duplicates
-        $data->names = array_values($data->names);
-
-        // Update file
-        file_put_contents($dbUrl, json_encode($data, JSON_PRETTY_PRINT));
-
-        // Prepare response object
-        $res = (object) [
-            'id' => $data->names[$id]->id,
-            'username' => $data->names[$id]->username
-        ];
-
-        // Send new user as response
-        print_r(json_encode($res));
-        return false;
+        echo "Something went wrong!";
     }
 }
 
@@ -52,24 +57,30 @@ if(isset($putData->password)) {
     // Get index of id in db
     $id = isInData($data->names, 'id', $id);
 
-    // Verify user
-    if(password_verify($putData->password, $data->names[$id]->password)) {
+    // Authenticate user
+    if($data->names[$id]->loginKey === $putData->loginKey) {
 
-        // Hash new password
-        $newPassword = password_hash($putData->newPassword, PASSWORD_BCRYPT);
+        // Verify user
+        if(password_verify($putData->password, $data->names[$id]->password)) {
 
-        $data->names[$id]->password = $newPassword;
+            // Hash new password
+            $newPassword = password_hash($putData->newPassword, PASSWORD_BCRYPT);
 
-        // Update file
-        file_put_contents($dbUrl, json_encode($data, JSON_PRETTY_PRINT));
+            $data->names[$id]->password = $newPassword;
 
-        $res = (object )[
-            'mes' => 'Password was changed!'
-        ];
+            // Update file
+            file_put_contents($dbUrl, json_encode($data, JSON_PRETTY_PRINT));
 
-        print_r(json_encode($res));
+            $res = (object )[
+                'mes' => 'Password was changed!'
+            ];
+
+            print_r(json_encode($res));
+            return false;
+        } else { echo "Wrong password!"; }
         return false;
-    } else { echo "Wrong password!"; }
-    return false;
+    } else {
+        echo "Something went wrong!";
+    }
 }
 ?>

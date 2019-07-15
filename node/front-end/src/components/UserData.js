@@ -5,14 +5,16 @@ import httpReq from '../services/httpReq'
 const UserData = ({u, setUser, setMessage, setMessageStatus, setTimer}) => {
   const handleNameChange = (e) => {
     e.preventDefault()
+
     const user = {
       id: u.id,
+      loginKey: u.loginKey,
       username: e.target[0].value,
     }
 
     httpReq.update(user).then(res => {
       if(typeof res === 'object') {
-        setUser(res)
+        setUser({...u, username: res.username})
         setMessage(`Username changed to ${res.username}!`)
         setMessageStatus('success')
         setTimer(2000)
@@ -26,8 +28,10 @@ const UserData = ({u, setUser, setMessage, setMessageStatus, setTimer}) => {
 
   const handlePasswordChange = (e) => {
     e.preventDefault()
+    
     const user = {
       id: u.id,
+      loginKey: u.loginKey,
       password: e.target[0].value,
       newPassword: e.target[1].value,
     }
@@ -52,6 +56,7 @@ const UserData = ({u, setUser, setMessage, setMessageStatus, setTimer}) => {
 
     const user = {
       id: u.id,
+      loginKey: u.loginKey
     }
 
     httpReq.del(user).then(res => {
@@ -63,10 +68,20 @@ const UserData = ({u, setUser, setMessage, setMessageStatus, setTimer}) => {
   }
 
   const handleLogout = () => {
-    setUser()
-    setMessageStatus('success')
-    setMessage(`Logged out!`)
-    setTimer(2000)
+    const user = {
+      id: u.id
+    }
+  
+    httpReq.logout(user).then(() => {
+      setUser()
+      setMessageStatus('success')
+      setMessage(`Logged out!`)
+      setTimer(2000)
+    }).catch((error) => {
+      setMessage(error)
+      setMessageStatus('error')
+      setTimer(2000)
+    })
   }
   
   return (

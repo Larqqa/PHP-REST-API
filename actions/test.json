@@ -2,7 +2,7 @@
     "names": [
         {
             "id": 0,
-            "username": "pikkumyy",
+            "username": "asd",
             "password": "$2y$10$PZGRKGv0taB4aoKD\/EW3xOTp0y3IyR62HzkjZNln4caHJEIvTHZiu"
         },
         {
@@ -28,7 +28,32 @@
         {
             "id": 5,
             "username": "muumipeikko",
-            "password": "$2y$10$zlzVha206xOrpw4Vgp4xkuawyGa9Dg5wcPkHc1iMbfVtb1HVItM.i"
+            "password": "$2y$10$zlzVha206xOrpw4Vgp4xkuawyGa9Dg5wcPkHc1iMbfVtb1HVItM.i",
+            "loginKey": null
+        },
+        {
+            "id": 6,
+            "username": "ads",
+            "password": "$2y$10$pn6k2lEMZjhmgo.I4R7sZ.kMHwxSrGJIaJIQT4D3dp3tq7R08R71y",
+            "loginKey": "5dacfdb706f2f8f62b8272b4890c89"
+        },
+        {
+            "id": 7,
+            "username": "asdasdasd",
+            "password": "$2y$10$4xi6dykmU4pP9mDlLpCuweYXwWTwdU7NMGNjVEPlpgRZEvLvW0LnO",
+            "loginKey": "60de346534761dbddae5be6641f628"
+        },
+        {
+            "id": 8,
+            "username": "asdasd",
+            "password": "$2y$10$zWGF4pKc\/qy2.AR2FpuAROvmH4a\/SNhnCK3K0pjtMbQAFTv2LVGJK",
+            "loginKey": "63835fffc0d72b023c3022764ccdf1"
+        },
+        {
+            "id": 9,
+            "username": "qwe",
+            "password": "$2y$10$.y7am9uHs2T.\/y5VEsQvIebXwgO8sssX37aJT6J5FeZ\/sz7Ez7zOe",
+            "loginKey": "11dd3cc7b952b2d81074e366b6d5b1"
         }
     ]
 }
